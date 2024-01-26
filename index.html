@@ -7,9 +7,9 @@
     <title>Vanilla App Template</title>
     
     <script type="module" crossorigin src="/msse-goit-advancedjs-hw-04/commonHelpers.js"></script>
-    <link rel="modulepreload" crossorigin href="/msse-goit-advancedjs-hw-04/assets/vendor-7af2edd1.js">
+    <link rel="modulepreload" crossorigin href="/msse-goit-advancedjs-hw-04/assets/vendor-91d324f0.js">
     <link rel="stylesheet" href="/msse-goit-advancedjs-hw-04/assets/vendor-e5212ee8.css">
-    <link rel="stylesheet" href="/msse-goit-advancedjs-hw-04/assets/index-c02e6e74.css">
+    <link rel="stylesheet" href="/msse-goit-advancedjs-hw-04/assets/index-e4250c0f.css">
   </head>
   <body>
     <!-- HEADER -->
@@ -17,12 +17,13 @@
   <div class="container">
     <form class="search-form" id="search-form">
       <input
+        class="input"
         type="text"
         name="searchQuery"
         autocomplete="off"
         placeholder="Search images..."
       />
-      <button type="submit">Search</button>
+      <button type="submit" disabled>Search</button>
     </form>
   </div>
 </header>
@@ -33,8 +34,8 @@
     <div class="gallery">
       <!-- Картки зображень -->
     </div>
+    <button type="button" class="load-more visually-hidden">Load more</button>
   </div>
-  <button type="button" class="load-more">Load more</button>
 </section>
 
     
