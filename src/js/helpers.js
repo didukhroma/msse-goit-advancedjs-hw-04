@@ -1,5 +1,5 @@
 export function prepareQueryForRequest(query) {
-  return query.trim().toLowerCase().split(' ').join('+');
+  return query.trim().toLowerCase().replace(/\s/g, '+');
 }
 
 export function createMarkup(data) {
@@ -14,8 +14,10 @@ export function createMarkup(data) {
         comments,
         downloads,
       }) => {
-        return `<div class="photo-card" >
-    <img src="${webformatURL}" alt="${tags}" loading="lazy" data-large=${largeImageURL} />
+        return `<div class="photo-card" data-text=${tags} data-large=${largeImageURL}>
+    <div class="photo-wrapper" >
+    <img class="photo" src="${webformatURL}" alt="${tags}" loading="lazy"  />
+    </div>
     <div class="info">
         <p class="info-item">
             <b>Likes</b>${likes}
