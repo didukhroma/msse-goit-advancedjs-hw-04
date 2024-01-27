@@ -10,9 +10,9 @@ import 'izitoast/dist/css/iziToast.min.css';
  * @type {Number} - time in milliseconds
  * @example const DELAY_TIME = 3000;
  */
-const DELAY_TIME = 30000;
+const DELAY_TIME = 3000;
 
-const ERROR_DEFAULT_MESSAFE =
+const ERROR_DEFAULT_MESSAGE =
   'Sorry, there are no images matching your search query. Please try again';
 /**
  * Settings for iziToast 
@@ -48,21 +48,21 @@ const iziToastSettings = {
   timeout: DELAY_TIME,
   position: 'topRight',
 };
-export function successToast() {
-  // iziToastSettings.title = 'Hooray!';
-  // iziToastSettings.message = `We found ${totalHits} images.`;
+export function successToast(totalHits) {
+  iziToastSettings.title = 'Hooray!';
+  iziToastSettings.message = `We found ${totalHits} images.`;
   iziToast.success(iziToastSettings);
 }
 
-export function errorToast(message = ERROR_DEFAULT_MESSAFE) {
+export function errorToast(message) {
   iziToastSettings.title = 'Error';
-  iziToastSettings.message = message;
+  iziToastSettings.message = message || ERROR_DEFAULT_MESSAGE;
   return iziToast.error(iziToastSettings);
 }
 
 export function warningToast() {
   iziToastSettings.title = 'Warning';
   iziToastSettings.message =
-    'Oops! Something went wrong! Try to change search query';
+    "We're sorry, but you've reached the end of search results.";
   return iziToast.warning(iziToastSettings);
 }

@@ -1,9 +1,10 @@
 import throttle from 'lodash.throttle';
-import { fetchPhotos, checkResponseStatus } from './api';
-import { MAX_RES_PER_PAGE, ref } from './common';
+import { scroll } from './scroll';
+import { fetchPhotos, checkResponseStatus, service } from './api';
+import { MAX_EL_PER_PAGE, ref, HIDDEN_CLASS } from './common';
 import { prepareQueryForRequest, createMarkup } from './helpers';
 import { successToast, warningToast, errorToast } from './iziToast';
-// import { galleryLightBox } from './simpleLightBox';
+import { galleryLightBox } from './simpleLightBox';
 
 let searchQuery = '';
 let page = 1;
@@ -12,7 +13,6 @@ const input = ref.form.elements.searchQuery;
 
 ref.form.addEventListener('submit', handleSubmit);
 input.addEventListener('input', throttle(handleInput, 300)); //hide button load more when change search query
-// ref.loadMore.addEventListener('click', handleClick);
 
 function handleInput() {
   const buttonSearch = ref.form.elements[1];
@@ -24,69 +24,70 @@ function handleInput() {
   buttonSearch.disabled = false;
 }
 
-function handleSubmit(e) {
+async function handleSubmit(e) {
   e.preventDefault();
-  successToast();
 
   const query = prepareQueryForRequest(
     e.currentTarget.children.searchQuery.value
   );
 
-  if (query !== searchQuery) {
-    ref.loadMore.classList.add('visually-hidden');
-    searchQuery = query;
+  if (query !== service.searchQuery) {
+    observer.unobserve(ref.guard);
+    service.startPage();
+    service.searchQuery = query;
     ref.gallery.innerHTML = '';
   }
 
-  fetchPhotos(query, page)
-    .then(checkResponseStatus)
-    .then(({ total, totalHits, hits }) => {
-      // if (!total) {
-      //   ref.loadMore.classList.add('visually-hidden');
-      //   errorToast();
-      //   throw new Error('');
-      // }
-
-      // if (totalHits < MAX_RES_PER_PAGE)
-      //   ref.loadMore.classList.add('visually-hidden');
-
-      const markup = createMarkup(hits);
-      ref.gallery.insertAdjacentHTML('beforeend', markup);
-
-      // galleryLightBox.refresh();
-      ref.loadMore.classList.remove('visually-hidden');
-      return totalHits;
-    })
-    // .then(successToast)
-    .catch(error => {
-      ref.loadMore.classList.add('visually-hidden');
-      errorToast(error.message);
-      console.log(error);
-    });
-
-  //Destroys and reinitilized the lightbox, needed for eg. Ajax Calls, or after dom manipulations
-}
-
-async function handleClick() {
-  page += 1;
-  let response = '';
-
   try {
-    response = await getPhotos(searchQuery, page);
-    if (response.status !== 200) throw new Error(response.statusText);
+    const response = await service.getPhoto();
+    const { totalHits, hits } = response;
+
+    if (!totalHits) {
+      throw new Error('');
+    }
+
+    if (totalHits > MAX_EL_PER_PAGE) {
+      observer.observe(ref.guard);
+    }
+
+    const markup = createMarkup(hits);
+    ref.gallery.insertAdjacentHTML('beforeend', markup);
+
+    successToast(totalHits);
+    galleryLightBox.refresh();
   } catch (error) {
-    errorToast(error);
     console.log(error);
+    errorToast(error.message);
   }
-
-  const { total, totalHits, hits } = response.data;
-
-  if (!total) {
-    warningToast();
-    return;
-  }
-
-  successToast(totalHits); //!----------------Violation
-  const markup = createMarkup(hits);
-  ref.gallery.insertAdjacentHTML('beforeend', markup);
 }
+//-----------------------------------------------------
+const options = {
+  rootMargin: '200px',
+};
+
+const callback = (entries, observer) => {
+  entries.forEach(async entry => {
+    if (entry.isIntersecting) {
+      service.nextPage();
+      try {
+        const response = await service.getPhoto();
+        const { totalHits, hits } = response;
+
+        if (totalHits < MAX_EL_PER_PAGE * service.page) {
+          observer.unobserve(ref.guard);
+          warningToast();
+        }
+
+        const markup = createMarkup(hits);
+        ref.gallery.insertAdjacentHTML('beforeend', markup);
+
+        successToast(totalHits);
+        galleryLightBox.refresh();
+      } catch (error) {
+        console.log(error);
+        errorToast(error.message);
+      }
+    }
+  });
+};
+const observer = new IntersectionObserver(callback, options);
