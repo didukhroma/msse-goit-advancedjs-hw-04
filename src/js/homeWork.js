@@ -1,18 +1,19 @@
 import throttle from 'lodash.throttle';
-import { scroll } from './scroll';
-import { fetchPhotos, checkResponseStatus, service } from './api';
-import { MAX_EL_PER_PAGE, ref, HIDDEN_CLASS } from './common';
+import { scroll, scrollToTop } from './scroll';
+import { service } from './api';
+import { MAX_EL_PER_PAGE, ref } from './common';
 import { prepareQueryForRequest, createMarkup } from './helpers';
 import { successToast, warningToast, errorToast } from './iziToast';
 import { galleryLightBox } from './simpleLightBox';
-
-let searchQuery = '';
-let page = 1;
 
 const input = ref.form.elements.searchQuery;
 
 ref.form.addEventListener('submit', handleSubmit);
 input.addEventListener('input', throttle(handleInput, 300)); //hide button load more when change search query
+//---GO TOP
+ref.goTop.addEventListener('click', handleClick);
+window.addEventListener('scroll', trackScroll);
+// window.addEventListener('load', trackScroll);
 
 function handleInput() {
   const buttonSearch = ref.form.elements[1];
@@ -62,7 +63,7 @@ async function handleSubmit(e) {
 }
 //-----------------------------------------------------
 const options = {
-  rootMargin: '200px',
+  rootMargin: '400px',
 };
 
 const callback = (entries, observer) => {
@@ -81,8 +82,8 @@ const callback = (entries, observer) => {
         const markup = createMarkup(hits);
         ref.gallery.insertAdjacentHTML('beforeend', markup);
 
-        successToast(totalHits);
         galleryLightBox.refresh();
+        scroll();
       } catch (error) {
         console.log(error);
         errorToast(error.message);
@@ -91,3 +92,18 @@ const callback = (entries, observer) => {
   });
 };
 const observer = new IntersectionObserver(callback, options);
+//------------------------------------------------------
+function handleClick() {
+  scrollToTop();
+}
+function trackScroll() {
+  window.removeEventListener('load', trackScroll);
+
+  const windowHeight = window.scrollY;
+
+  if (windowHeight > 800) {
+    ref.goTop.classList.remove('visually-hidden');
+  } else {
+    ref.goTop.classList.add('visually-hidden');
+  }
+}

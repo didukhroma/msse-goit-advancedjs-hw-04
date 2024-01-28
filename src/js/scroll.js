@@ -9,3 +9,7 @@ export function scroll() {
     behavior: 'smooth',
   });
 }
+
+export function scrollToTop() {
+  window.scrollTo(0, 0);
+}

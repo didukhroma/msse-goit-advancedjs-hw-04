@@ -1,0 +1,33 @@
+.go-top {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: hsl(236, 100%, 60%);
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  border-radius: 50%;
+  border: none;
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  transition: background-color 0.3s, opacity 0.5s, visibility 0.5s;
+
+  z-index: 1000;
+}
+
+.go-top:hover {
+  cursor: pointer;
+  background-color: hsl(236, 100%, 50%);
+}
+.go-top:active {
+  background-color: hsl(236, 100%, 50%);
+}
+
+.scroll-to-bottom-icon {
+  display: block;
+  width: 30px;
+  height: 30px;
+  stroke-width: 0;
+  transform: rotate(180deg);
+}
