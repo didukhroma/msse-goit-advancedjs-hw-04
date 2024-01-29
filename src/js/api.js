@@ -10,6 +10,12 @@ axios.defaults.params = {
   safesearch: true,
 };
 
+/**
+ * Api service
+ *
+ * @class ServiceApi
+ * @typedef {ServiceApi}
+ */
 class ServiceApi {
   constructor() {
     this.query = '';
@@ -42,4 +48,9 @@ class ServiceApi {
   }
 }
 
+/**
+ * New example of instance SErviceApi
+ *
+ * @type {ServiceApi}
+ */
 export const service = new ServiceApi();

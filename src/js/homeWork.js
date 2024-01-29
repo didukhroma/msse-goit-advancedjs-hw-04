@@ -14,6 +14,7 @@ ref.goTop.addEventListener('click', handleClick); //---GO TOP
 window.addEventListener('scroll', trackScroll);
 window.addEventListener('load', trackScroll);
 
+//disabled enable search btn
 function handleInput() {
   const buttonSearch = ref.form.elements[1];
   if (!input.value) {
@@ -24,6 +25,7 @@ function handleInput() {
   buttonSearch.disabled = false;
 }
 
+//submit
 async function handleSubmit(e) {
   e.preventDefault();
 
@@ -60,7 +62,7 @@ async function handleSubmit(e) {
     errorToast(error.message);
   }
 }
-//-----------------------------------------------------
+//Infinite scroll
 const options = {
   rootMargin: '400px',
 };
@@ -92,6 +94,7 @@ const callback = (entries, observer) => {
 };
 const observer = new IntersectionObserver(callback, options);
 //------------------------------------------------------
+//Scroll to top
 function handleClick() {
   scrollToTop();
 }
