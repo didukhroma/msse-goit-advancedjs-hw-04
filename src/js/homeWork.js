@@ -10,10 +10,9 @@ const input = ref.form.elements.searchQuery;
 
 ref.form.addEventListener('submit', handleSubmit);
 input.addEventListener('input', throttle(handleInput, 300)); //hide button load more when change search query
-//---GO TOP
-ref.goTop.addEventListener('click', handleClick);
+ref.goTop.addEventListener('click', handleClick); //---GO TOP
 window.addEventListener('scroll', trackScroll);
-// window.addEventListener('load', trackScroll);
+window.addEventListener('load', trackScroll);
 
 function handleInput() {
   const buttonSearch = ref.form.elements[1];

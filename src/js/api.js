@@ -1,9 +1,6 @@
 import axios from 'axios';
 import { AUTH_TOKEN, MAX_EL_PER_PAGE } from './common';
 
-/**
- *
- */
 axios.defaults.baseURL = 'https://pixabay.com/api/';
 axios.defaults.params = {
   key: AUTH_TOKEN,
@@ -12,18 +9,6 @@ axios.defaults.params = {
   orientation: 'horizontal',
   safesearch: true,
 };
-
-export function fetchPhotos(query = '', page = 1) {
-  if (!query) return;
-  return axios({
-    params: {
-      q: query,
-      page: page,
-    },
-  });
-}
-
-export function checkResponseStatus(response) {}
 
 class ServiceApi {
   constructor() {

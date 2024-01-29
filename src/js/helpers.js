@@ -1,7 +1,23 @@
+/**
+ * Function for trim search query and return  string with symbol '+' instead of space
+ *
+ * @export
+ * @param {String} query - input search query
+ * @returns {String}
+ * @example function prepareQueryForRequest(query) { // ' Red flower '
+  return query.trim().toLowerCase().replace(/\s/g, '+'); //'red+flower'
+ */
 export function prepareQueryForRequest(query) {
   return query.trim().toLowerCase().replace(/\s/g, '+');
 }
 
+/**
+ * Function for create markup from template
+ *
+ * @export
+ * @param {Array} data
+ * @returns {String}
+ */
 export function createMarkup(data) {
   return data
     .map(
