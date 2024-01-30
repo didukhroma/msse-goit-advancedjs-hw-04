@@ -17,7 +17,7 @@ window.addEventListener('load', trackScroll);
 //disabled enable search btn
 function handleInput() {
   const buttonSearch = ref.form.elements[1];
-  if (!input.value) {
+  if (!input.value || !input.value.trim().length) {
     buttonSearch.disabled = true;
     return;
   }
@@ -48,14 +48,16 @@ async function handleSubmit(e) {
       throw new Error('');
     }
 
-    if (totalHits > MAX_EL_PER_PAGE) {
+    if (totalHits <= MAX_EL_PER_PAGE) {
+      warningToast();
+    } else if (totalHits > MAX_EL_PER_PAGE) {
       observer.observe(ref.guard);
+      successToast(totalHits);
     }
 
     const markup = createMarkup(hits);
     ref.gallery.insertAdjacentHTML('beforeend', markup);
 
-    successToast(totalHits);
     galleryLightBox.refresh();
   } catch (error) {
     console.log(error);
